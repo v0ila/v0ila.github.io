@@ -2,7 +2,7 @@
 <head>
 <script src="sensor.js"></script>
 </head>
-<body>
-<p id="sensordata">sensor here</p>
+<body onload="bmak.bpd();bmak.sensor_data;document.getElementById('sensordata').innerHTML = bmak.get_telemetry();">
+<p id="sensordata"></p>
 </body>
 </html>
