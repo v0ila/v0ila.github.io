@@ -1,6 +1,6 @@
 var _cf = _cf || [],
     bmak = bmak && bmak.hasOwnProperty('ver') && bmak.hasOwnProperty('sed') ? bmak : {
-        ver: 1.69,
+        ver: 1.7,
         ke_cnt_lmt: 150,
         mme_cnt_lmt: 100,
         mduce_cnt_lmt: 75,
@@ -89,7 +89,6 @@ var _cf = _cf || [],
         mn_psn: '',
         mn_ts: '',
         mn_lg: [],
-        ipr: !1,
         loap: 1,
         dcs: 0,
         ir: function () {
@@ -121,6 +120,7 @@ var _cf = _cf || [],
                 i = -1,
                 c = -1,
                 b = -1;
+            n + ',' + o + ',' + m + ',' + r + ',' + c + ',' + i + ',' + b;
             try {
                 n = window.screen ? window.screen.availWidth : -1
             } catch (t) {
@@ -240,7 +240,7 @@ var _cf = _cf || [],
         },
         getmr: function () {
             try {
-                if ('undefined' == typeof performance || void 0 === performance.now || 'undefined' == typeof JSON) return void(bmak.mr = 'undef');
+                if ('undefined' == typeof performance || void 0 === performance.now || 'undefined' == typeof JSON) return void (bmak.mr = 'undef');
                 for (var t = '', a = 1e3, e = [Math.abs, Math.acos, Math.asin, Math.atanh, Math.cbrt, Math.exp, Math.random, Math.round, Math.sqrt, isFinite, isNaN, parseFloat, parseInt, JSON.parse], n = 0; n < e.length; n++) {
                     var o = [],
                         m = 0,
@@ -279,31 +279,75 @@ var _cf = _cf || [],
             var r;
             return r = null != window.document.documentElement.getAttribute('selenium') ? '1' : '0', [t, a, e, n, o, m, r].join(',')
         },
-        cma: function (t, a) {
+        cma: function (t, a){
+            // a can be 1 mouse move, 2 mouse click, 3 mouse down, 4 mouse up
             try {
                 if (1 == a && bmak.mme_cnt < bmak.mme_cnt_lmt || 1 != a && bmak.mduce_cnt < bmak.mduce_cnt_lmt) {
                     var e = t || window.event,
                         n = -1,
                         o = -1;
-                    e && e.pageX && e.pageY ? (n = Math.floor(e.pageX), o = Math.floor(e.pageY)) : e && e.clientX && e.clientY && (n = Math.floor(e.clientX), o = Math.floor(e.clientY));
+                    
+                    // e && e.pageX && e.pageY ? (n = Math.floor(e.pageX), o = Math.floor(e.pageY)) : e && e.clientX && e.clientY && (n = Math.floor(e.clientX), o = Math.floor(e.clientY));
+
+                    if(e && e.pageX && e.pageX){
+                        n = Math.floor(e.pageX);
+                        o = Math.floor(e.pageY);
+                    }else if(e && e.clientX && e.clientY){
+                        n = Math.floor(e.clientX);
+                        o = Math.floor(e.clientY);
+                    }
                     var m = e.toElement;
                     null == m && (m = e.target);
                     var r = bmak.gf(m),
                         i = bmak.get_cf_date() - bmak.start_ts,
                         c = bmak.me_cnt + ',' + a + ',' + i + ',' + n + ',' + o;
+
+                    // if it's not a mouse movement
                     if (1 != a) {
+                        // add where i clicked
                         c = c + ',' + r;
-                        var b = void 0 !== e.which ? e.which : e.button;
-                        null != b && 1 != b && (c = c + ',' + b)
+
+                        // var b = void 0 !== e.which ? e.which : e.button;
+                        if(0 !== e.which){
+                            b = e.which;
+                        }else{
+                            b = e.button;
+                        }
+                        
+                        // null != b && 1 != b && (c = c + ',' + b)
+                        if(null != b && 1!= b){
+                            c = c + ',' + b
+                        }
                     }
-                    void 0 !== e.isTrusted && !1 === e.isTrusted && (c += ',it0'), c += ';', bmak.me_vel = bmak.me_vel + bmak.me_cnt + a + i + n + o, bmak.mact = bmak.mact + c, bmak.ta += i
+
+                    // void 0 !== e.isTrusted && !1 === e.isTrusted && (c += ',it0'), c += ';', bmak.me_vel = bmak.me_vel + bmak.me_cnt + a + i + n + o, bmak.mact = bmak.mact + c, bmak.ta += i
+                    if(0 !== e.isTrusted && !1 === e.isTrusted){
+                        c += ',it0'
+                    }
+                    c += ';'
+                    bmak.me_vel = bmak.me_vel + bmak.me_cnt + a + i + n + o
+                    bmak.mact += c
+                    bmak.ta += i
+               }
+                // 1 == a ? bmak.mme_cnt++ : bmak.mduce_cnt++, bmak.me_cnt++, bmak.js_post && 3 == a && (bmak.aj_type = 1, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1)
+                if(1 == a){
+                    bmak.mme_cnt += 1;
+                }else{
+                    bmak.mduce_cnt += 1;
                 }
-                1 == a ? bmak.mme_cnt++ : bmak.mduce_cnt++, bmak.me_cnt++, bmak.js_post && 3 == a && (bmak.aj_type = 1, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1)
-            } catch (t) {}
+                bmak.me_cnt += 1;
+                
+                if(bmak.js_post && 3 == a){
+                    bmak.aj_type = 1;
+                    bmak.bpd();
+                    bmak.pd(!0)
+                    bmak.ce_js_post = 1;
+                }
+            } catch (t) { }
         },
         x2: function () {
             var t = bmak.ff,
-                a = t(98) + t(109) + t(97) + t(107),
+                a = bmak.ff(98) + bmak.ff(109) + bmak.ff(97) + bmak.ff(107),
                 e = t(103) + t(101) + t(116) + t(95) + t(99) + t(102) + t(95) + t(100) + t(97) + t(116) + t(101),
                 n = window[a][e],
                 o = 0;
@@ -313,13 +357,13 @@ var _cf = _cf || [],
             var t = [],
                 a = ['geolocation', 'notifications', 'push', 'midi', 'camera', 'microphone', 'speaker', 'device-info', 'background-sync', 'bluetooth', 'persistent-storage', 'ambient-light-sensor', 'accelerometer', 'gyroscope', 'magnetometer', 'clipboard', 'accessibility-events', 'clipboard-read', 'clipboard-write', 'payment-handler'];
             try {
-                if (!navigator.permissions) return void(bmak.nav_perm = 6);
-                bmak.nav_perm = 8;
+                if (!navigator.permissions) return void (bmak.nav_perm = 6);
+                mak.nav_perm = 8;
                 var e = function (a, e) {
-                        return navigator.permissions.query({
-                            name: a
-                        }).then(function (a) {
-                            switch (a.state) {
+                    return navigator.permissions.query({
+                        name: a
+                    }).then(function (a) {
+                        switch (a.state) {
                             case 'prompt':
                                 t[e] = 1;
                                 break;
@@ -331,11 +375,11 @@ var _cf = _cf || [],
                                 break;
                             default:
                                 t[e] = 5
-                            }
-                        }).catch(function (a) {
-                            t[e] = -1 !== a.message.indexOf('is not a valid enum value of type PermissionName') ? 4 : 3
-                        })
-                    },
+                        }
+                    }).catch(function (a) {
+                        t[e] = -1 !== a.message.indexOf('is not a valid enum value of type PermissionName') ? 4 : 3
+                    })
+                },
                     n = a.map(function (t, a) {
                         return e(t, a)
                     });
@@ -361,9 +405,10 @@ var _cf = _cf || [],
                         void 0 !== n.isTrusted && !1 === n.isTrusted && (i += ',0'), bmak.pe_vel = bmak.pe_vel + bmak.pe_cnt + a + r + o + m, bmak.pact = bmak.pact + i + ';', bmak.ta += r, 1 == a ? bmak.pme_cnt++ : bmak.pduce_cnt++
                     }
                 }
-                1 == a ? bmak.pme_cnt++ : bmak.pduce_cnt++, bmak.pe_cnt++, bmak.js_post && 3 == a && e && (bmak.aj_type = 2, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1)
-            } catch (t) {}
+                1 == a ? bmpme_cnt++ : bmak.pduce_cnt++, bmak.pe_cnt++, bmak.js_post && 3 == a && e && (bmak.aj_type = 2, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1)
+            } catch (t) { }
         },
+        //! sum of  all ascii value of USER agent, IF the charValue is < 128
         ab: function (t) {
             if (null == t) return -1;
             try {
@@ -430,8 +475,23 @@ var _cf = _cf || [],
                 } else bmak.ssh = '0'
             } else bmak.ssh = 'n'
         },
+        hbs: function () {
+            try {
+                return Boolean(window.__nightmare) + (Boolean(window.cdc_adoQpoasnfa76pfcZLmcfl_Array) << 1) + (Boolean(window.cdc_adoQpoasnfa76pfcZLmcfl_Promise) << 2) + (Boolean(window.cdc_adoQpoasnfa76pfcZLmcfl_Symbol) << 3) + (Boolean(window.OSMJIF) << 4) + (Boolean(window._Selenium_IDE_Recorder) << 5) + (Boolean(window.__$webdriverAsyncExecutor) << 6) + (Boolean(window.__driver_evaluate) << 7) + (Boolean(window.__driver_unwrapped) << 8) + (Boolean(window.__fxdriver_evaluate) << 9) + (Boolean(window.__fxdriver_unwrapped) << 10) + (Boolean(window.__lastWatirAlert) << 11) + (Boolean(window.__lastWatirConfirm) << 12) + (Boolean(window.__lastWatirPrompt) << 13) + (Boolean(window.__phantomas) << 14) + (Boolean(window.__selenium_evaluate) << 15) + (Boolean(window.__selenium_unwrapped) << 16) + (Boolean(window.__webdriverFuncgeb) << 17) + (Boolean(window.__webdriver__chr) << 18) + (Boolean(window.__webdriver_evaluate) << 19) + (Boolean(window.__webdriver_script_fn) << 20) + (Boolean(window.__webdriver_script_func) << 21) + (Boolean(window.__webdriver_script_function) << 22) + (Boolean(window.__webdriver_unwrapped) << 23) + (Boolean(window.awesomium) << 24) + (Boolean(window.callSelenium) << 25) + (Boolean(window.calledPhantom) << 26) + (Boolean(window.calledSelenium) << 27) + (Boolean(window.domAutomationController) << 28) + (Boolean(window.watinExpressionError) << 29) + (Boolean(window.watinExpressionResult) << 30) + (Boolean(window.spynner_additional_js_loaded) << 31) + (Boolean(document.$chrome_asyncScriptInfo) << 32) + (Boolean(window.fmget_targets) << 33) + (Boolean(window.geb) << 34)
+            } catch (t) {
+                return 0
+            }
+        },
+        gwd: function () {
+            try {
+                return navigator.webdriver ? navigator.webdriver : -1
+            } catch (t) {
+                return 0
+            }
+        },
         gf: function (t) {
             var a;
+            // if t is null a is active element, if no active element is active return -1
             if (a = null == t ? document.activeElement : t, null == document.activeElement) return -1;
             var e = a.getAttribute('name');
             if (null == e) {
@@ -466,10 +526,13 @@ var _cf = _cf || [],
         },
         cka: function (t, a) {
             try {
-                var e = t || window.event,
+                var e = t || window.edown
+vent,
+                
                     n = -1,
                     o = 1;
                 if (bmak.ke_cnt < bmak.ke_cnt_lmt && e) {
+                    // On chrome keycode is the ascii value and charCode is 0
                     n = e.keyCode;
                     var m = e.charCode,
                         r = e.shiftKey ? 1 : 0,
@@ -480,14 +543,65 @@ var _cf = _cf || [],
                         s = bmak.get_cf_date() - bmak.start_ts,
                         k = bmak.gf(null),
                         l = 0;
+
+                    console.log(`keycode:${e.keyCode}, charCode:${e.charCode}, r:${e.shiftKey}, i:${e.ctrlKey}, c:${e.metaKey}, b:${e.altKey}, k:${bmak.gf(null)}, s:${bmak.get_cf_date() - bmak.start_ts}`);
+                    //! Check which one is not null(n, m) and assign that to N
+                    // charcode is 0 so it doesn't enter here
+                    if(m && n){
+                        // (n = 0 != m && 0 != n && m != n ? -1 : 0 != n ? n : m)
+                        if( 0 != m && 0 != n && m != n)
+                            n = -1
+                        else if( 0 != n)
+                            n = n
+                        else
+                            n = m   
+                    }
+                    // if Ctrl, meta and alt keys are not pressed 
+                    if(0 == i && 0 == c && 0 == b && n >= 32 ){
+                        //  0 == i && 0 == c && 0 == b && n >= 32 && (n = 3 == a && n >= 32 && n <= 126 ? -2 : n >= 33 && n <= 47 ? -3 : n >= 112 && n <= 123 ? -4 : -2),
+                        
+                        // if its called by Event keyboardPress
+                        if(3 == a && n >= 32 && n <= 126)
+                            n = -2
+                        // special char 
+                        else if(n >= 33 && n <= 47)
+                            n = -3
+                        // letters between p to {
+                        else if(n >= 112 && n <= 123)
+                            n = -4
+                        // n > 47 && n < 112 
+                        else
+                            n = -2
+                    }
+                    // k != bmak.prevfid ? (bmak.fidcnt = 0, bmak.prevfid = k) : bmak.fidcnt = bmak.fidcnt + 1;
+
+                    if (k != bmak.prevfid){
+                        bmak.fidcnt = 0
+                        bmak.prevfid = k
+                    }
+                    else{
+                        bmak.fidcnt = bmak.fidcnt + 1ß
+                    }
                     m && n && (n = 0 != m && 0 != n && m != n ? -1 : 0 != n ? n : m), 0 == i && 0 == c && 0 == b && n >= 32 && (n = 3 == a && n >= 32 && n <= 126 ? -2 : n >= 33 && n <= 47 ? -3 : n >= 112 && n <= 123 ? -4 : -2), k != bmak.prevfid ? (bmak.fidcnt = 0, bmak.prevfid = k) : bmak.fidcnt = bmak.fidcnt + 1;
+                    
+                    // checks if there is an active element
                     if (0 == bmak.isIgn(n)) {
+
                         var u = bmak.ke_cnt + ',' + a + ',' + s + ',' + n + ',' + l + ',' + d + ',' + k;
+                        // if the event is genereted by script append ,0
+                        if (0 !== e.isTrusted && !1 === e.isTrusted){
+                            u += ',0'
+                        }
+                        u += ';'
+                        bmak.kact = bmak.kact + u
+                        bmak.ke_vel = bmak.ke_vel + bmak.ke_cnt + a + s + n + d + k;
+                        bmak.ta += s;
+
                         void 0 !== e.isTrusted && !1 === e.isTrusted && (u += ',0'), u += ';', bmak.kact = bmak.kact + u, bmak.ke_vel = bmak.ke_vel + bmak.ke_cnt + a + s + n + d + k, bmak.ta += s
                     } else o = 0
                 }
                 o && e && bmak.ke_cnt++, !bmak.js_post || 1 != a || 13 != n && 9 != n || (bmak.aj_type = 3, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1)
-            } catch (t) {}
+            } catch (t) { }
         },
         cta: function (t, a) {
             try {
@@ -495,13 +609,33 @@ var _cf = _cf || [],
                     var e = t || window.event,
                         n = -1,
                         o = -1;
-                    e && e.pageX && e.pageY ? (n = Math.floor(e.pageX), o = Math.floor(e.pageY)) : e && e.clientX && e.clientY && (n = Math.floor(e.clientX), o = Math.floor(e.clientY));
+                    // e && e.pageX && e.pageY ? (n = Math.floor(e.pageX), o = Math.floor(e.pageY)) : e && e.clientX && e.clientY && (n = Math.floor(e.clientX), o = Math.floor(e.clientY));
+
+                    if (e && e.pageX && e.pageX) {
+                        n = Math.floor(e.pageX);
+                        o = Math.floor(e.pageY);
+                    } else if (e && e.clientX && e.clientY) {
+                        n = Math.floor(e.clientX);
+                        o = Math.floor(e.clientY);
+                    }
+                    
+                    
                     var m = bmak.get_cf_date() - bmak.start_ts,
                         r = bmak.te_cnt + ',' + a + ',' + m + ',' + n + ',' + o;
-                    void 0 !== e.isTrusted && !1 === e.isTrusted && (r += ',0'), bmak.tact = bmak.tact + r + ';', bmak.ta += m, bmak.te_vel = bmak.te_vel + bmak.te_cnt + a + m + n + o, bmak.doa_throttle = 0, bmak.dma_throttle = 0
+
+                    // void 0 !== e.isTrusted && !1 === e.isTrusted && (r += ',0'), bmak.tact = bmak.tact + r + ';', bmak.ta += m, bmak.te_vel = bmak.te_vel + bmak.te_cnt + a + m + n + o, bmak.doa_throttle = 0, bmak.dma_throttle = 0
+                    if (0 !== e.isTrusted && !1 === e.isTrusted){
+                        r += ',0'
+                    }
+                    bmak.tact = bmak.tact + r + ';'
+                    bmak.ta += m
+                    bmak.te_vel = bmak.te_vel + bmak.te_cnt + a + m + n + o
+                    bmak.doa_throttle = 0
+                    bmak.dma_throttle 
                 }
+
                 1 == a ? bmak.tme_cnt++ : bmak.tduce_cnt++, bmak.te_cnt++, bmak.js_post && 2 == a && bmak.aj_indx_tact < bmak.aj_lmt_tact && (bmak.aj_type = 5, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1, bmak.aj_indx_tact++)
-            } catch (t) {}
+            } catch (t) { }
         },
         getFloatVal: function (t) {
             try {
@@ -509,7 +643,7 @@ var _cf = _cf || [],
                     var a = parseFloat(t);
                     if (!isNaN(a)) return a.toFixed(2)
                 }
-            } catch (t) {}
+            } catch (t) { }
             return -1
         },
         cdoa: function (t) {
@@ -523,7 +657,7 @@ var _cf = _cf || [],
                     void 0 !== t.isTrusted && !1 === t.isTrusted && (m += ',0'), bmak.doact = bmak.doact + m + ';', bmak.ta += a, bmak.doe_vel = bmak.doe_vel + bmak.doe_cnt + a, bmak.doe_cnt++
                 }
                 bmak.js_post && bmak.doe_cnt > 1 && bmak.aj_indx_doact < bmak.aj_lmt_doact && (bmak.aj_type = 6, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1, bmak.aj_indx_doact++), bmak.doa_throttle++
-            } catch (t) {}
+            } catch (t) { }
         },
         cdma: function (t) {
             try {
@@ -545,7 +679,7 @@ var _cf = _cf || [],
                     void 0 !== t.isTrusted && !1 === t.isTrusted && (s += ',0'), bmak.dmact = bmak.dmact + s + ';', bmak.ta += a, bmak.dme_vel = bmak.dme_vel + bmak.dme_cnt + a, bmak.dme_cnt++
                 }
                 bmak.js_post && bmak.dme_cnt > 1 && bmak.aj_indx_dmact < bmak.aj_lmt_dmact && (bmak.aj_type = 7, bmak.bpd(), bmak.pd(!0), bmak.ce_js_post = 1, bmak.aj_indx_dmact++), bmak.dma_throttle++
-            } catch (t) {}
+            } catch (t) { }
         },
         get_type: function (t) {
             return t = t.toLowerCase(), 'text' == t || 'search' == t || 'url' == t || 'email' == t || 'tel' == t || 'number' == t ? 0 : 'password' == t ? 1 : 2
@@ -554,23 +688,70 @@ var _cf = _cf || [],
             return null == t ? -1 : t
         },
         getforminfo: function () {
-            for (var t = '', a = '', e = document.getElementsByTagName('input'), n = -1, o = 0; o < e.length; o++) {
-                var m = e[o],
-                    r = bmak.ab(m.getAttribute('name')),
-                    i = bmak.ab(m.getAttribute('id')),
-                    c = m.getAttribute('required'),
-                    b = null == c ? 0 : 1,
-                    d = m.getAttribute('type'),
-                    s = null == d ? -1 : bmak.get_type(d),
-                    k = m.getAttribute('autocomplete');
-                null == k ? n = -1 : (k = k.toLowerCase(), n = 'off' == k ? 0 : 'on' == k ? 1 : 2);
-                var l = m.defaultValue,
-                    u = m.value,
-                    _ = 0,
+            // ciclo su tutti gli input box nella pagina
+
+            n = -1
+            a = ''
+            inputs = document.getElementsByTagName('input'),
+                t = ''
+            for (var i = 0; i < inputs.length; i++) {
+                var cInput = inputs[i],
+                    sumCharName = bmak.ab(cInput.getAttribute('name')),
+                    sumCharId = bmak.ab(cInput.getAttribute('id')),
+                    required = cInput.getAttribute('required'),
+
+                if (null == required) {
+                    isRequired = 0
+                }
+                else {
+                    isRequired = 1
+                }
+                //! return t = t.toLowerCase(), 'text' == t || 'search' == t || 'url' == t || 'email' == t || 'tel' == t || 'number' == t ? 0 : 'password' == t ? 1 : 2
+
+                type = cInput.getAttribute('type'),
+                    s = null == d ? -1 : bmak.get_type(type),
+                    autocomplete = cInput.getAttribute('autocomplete');
+
+                if (null == autocomplete) {
+                    n = -1
+                }
+                else {
+                    autocomplete = autocomplete.toLowerCase()
+                    if ('off' == autocomplete)
+                        n = 0
+                    if ('on' == autocomplete)
+                        n = 1
+                    else
+                        n = 2
+                }
+
+                var defaultValue = cInput.defaultValue,
+                    value = cInput.value,
+                    roba = 0,
                     f = 0;
-                l && 0 != l.length && (f = 1), !u || 0 == u.length || f && u == l || (_ = 1), 2 != s && (t = t + s + ',' + n + ',' + _ + ',' + b + ',' + i + ',' + r + ',' + f + ';'), a = a + _ + ';'
+
+                // defaultValue not empty
+                if (defaultValue && 0 != defaultValue) {
+                    f = 1
+                }
+
+                // value empty OR value == defaultValue
+                if (!value || 0 == value.length || (f && value == defaultValue)) {
+                    roba = 1
+
+                }
+
+                // type input NULL or text, search, url, email, password, tel, number
+                if (2 != s) {
+                    t = t + s + ',' + n + ',' + roba + ',' + isRequired + ',' + i + ',' + r + ',' + f + ';'
+
+                }
+                a = a + roba + ';'
             }
-            return null == bmak.ins && (bmak.ins = a), bmak.cns = a, t
+            if (null == bmak.ins)
+                bmak.ins = a
+            bmak.cns = a
+            return t
         },
         startdoadma: function () {
             0 == bmak.doadma_en && window.addEventListener && (window.addEventListener('deviceorientation', bmak.cdoa, !0), window.addEventListener('devicemotion', bmak.cdma, !0), bmak.doadma_en = 1), bmak.doa_throttle = 0, bmak.dma_throttle = 0
@@ -590,15 +771,20 @@ var _cf = _cf || [],
         htc: function (t) {
             bmak.cta(t, 4)
         },
+
+        // mouse Movement
         hmm: function (t) {
             bmak.cma(t, 1)
         },
+        // mouse click
         hc: function (t) {
             bmak.cma(t, 2)
         },
+        // mouse down
         hmd: function (t) {
             bmak.cma(t, 3)
         },
+        // mouse up
         hmu: function (t) {
             bmak.cma(t, 4)
         },
@@ -608,12 +794,15 @@ var _cf = _cf || [],
         hpu: function (t) {
             bmak.cpa(t, 4)
         },
+        // keyboard down
         hkd: function (t) {
             bmak.cka(t, 1)
         },
+        // keyboard up 
         hku: function (t) {
             bmak.cka(t, 2)
         },
+        // keyboard press 
         hkp: function (t) {
             bmak.cka(t, 3)
         },
@@ -649,7 +838,7 @@ var _cf = _cf || [],
             try {
                 var t = bmak.cookie_chk_read(bmak.ckie);
                 t || (bmak.n_ck = 1, t = bmak.bm ? '2' : '1')
-            } catch (t) {}
+            } catch (t) { }
             return t
         },
         cookie_chk_read: function (t) {
@@ -687,47 +876,49 @@ var _cf = _cf || [],
                     _ = bmak.get_cf_date() - bmak.start_ts,
                     f = bmak.pi(bmak.d2 / 6),
                     p = bmak.fas(),
-                    h = [bmak.ke_vel + 1, bmak.me_vel + 32, bmak.te_vel + 32, bmak.doe_vel, bmak.dme_vel, bmak.pe_vel, s, a, bmak.init_time, bmak.start_ts, bmak.fpcf.td, bmak.d2, bmak.ke_cnt, bmak.me_cnt, f, bmak.pe_cnt, bmak.te_cnt, _, bmak.ta, bmak.n_ck, e, bmak.ab(e), bmak.fpcf.rVal, bmak.fpcf.rCFP, p, l, u[0], u[1]],
-                    v = h.join(','),
-                    g = '' + bmak.ab(bmak.fpcf.fpValstr);
+                    v = bmak.hbs(),
+                    h = bmak.gwd(),
+                    g = [bmak.ke_vel + 1, bmak.me_vel + 32, bmak.te_vel + 32, bmak.doe_vel, bmak.dme_vel, bmak.pe_vel, s, a, bmak.init_time, bmak.start_ts, bmak.fpcf.td, bmak.d2, bmak.ke_cnt, bmak.me_cnt, f, bmak.pe_cnt, bmak.te_cnt, _, bmak.ta, bmak.n_ck, e, bmak.ab(e), bmak.fpcf.rVal, bmak.fpcf.rCFP, p, l, u[0], u[1], v, h],
+                    w = g.join(','),
+                    y = '' + bmak.ab(bmak.fpcf.fpValstr);
                 bmak.firstLoad ? bmak.np() : bmak.csh(), !bmak.hbCalc && (0 == bmak.js_post || bmak.aj_indx > 0) && (bmak.fm(), bmak.wgl(), bmak.hbCalc = !0);
-                var w = '';
-                bmak.hbCalc && (w = bmak.fmh + ',' + bmak.fmz + ',' + bmak.ssh + ',' + bmak.wv + ',' + bmak.wr + ',' + bmak.weh + ',' + bmak.wl);
-                var y = bmak.sed(),
-                    E = bmak.mn_get_current_challenges(),
-                    S = '',
-                    C = '',
+                var E = '';
+                bmak.hbCalc && (E = bmak.fmh + ',' + bmak.fmz + ',' + bmak.ssh + ',' + bmak.wv + ',' + bmak.wr + ',' + bmak.weh + ',' + bmak.wl);
+                var S = bmak.sed(),
+                    C = bmak.mn_get_current_challenges(),
+                    B = '',
+                    x = '',
                     M = '';
-                if (void 0 !== E[1]) {
-                    var x = E[1];
-                    void 0 !== bmak.mn_r[x] && (S = bmak.mn_r[x])
+                if (void 0 !== C[1]) {
+                    var j = C[1];
+                    void 0 !== bmak.mn_r[j] && (B = bmak.mn_r[j])
                 }
-                if (void 0 !== E[2]) {
-                    var j = E[2];
-                    void 0 !== bmak.mn_r[j] && (C = bmak.mn_r[j])
+                if (void 0 !== C[2]) {
+                    var A = C[2];
+                    void 0 !== bmak.mn_r[A] && (x = bmak.mn_r[A])
                 }
-                if (void 0 !== E[3]) {
-                    var A = E[3];
-                    void 0 !== bmak.mn_r[A] && (M = bmak.mn_r[A])
+                if (void 0 !== C[3]) {
+                    var L = C[3];
+                    void 0 !== bmak.mn_r[L] && (M = bmak.mn_r[L])
                 }
-                bmak.sensor_data = bmak.ver + '-1,2,-94,-100,' + n + '-1,2,-94,-101,' + i + '-1,2,-94,-105,' + bmak.informinfo + '-1,2,-94,-102,' + c + '-1,2,-94,-108,' + bmak.kact + '-1,2,-94,-110,' + bmak.mact + '-1,2,-94,-117,' + bmak.tact + '-1,2,-94,-111,' + bmak.doact + '-1,2,-94,-109,' + bmak.dmact + '-1,2,-94,-114,' + bmak.pact + '-1,2,-94,-103,' + bmak.vcact + '-1,2,-94,-112,' + b + '-1,2,-94,-115,' + v + '-1,2,-94,-106,' + d, bmak.sensor_data = bmak.sensor_data + '-1,2,-94,-119,' + bmak.mr + '-1,2,-94,-122,' + y + '-1,2,-94,-123,' + S + '-1,2,-94,-124,' + C + '-1,2,-94,-126,' + M + '-1,2,-94,-127,' + bmak.nav_perm;
-                var L = 24 ^ bmak.ab(bmak.sensor_data);
-                bmak.sensor_data = bmak.sensor_data + '-1,2,-94,-70,' + bmak.fpcf.fpValstr + '-1,2,-94,-80,' + g + '-1,2,-94,-116,' + bmak.o9 + '-1,2,-94,-118,' + L + '-1,2,-94,-129,' + w + '-1,2,-94,-121,', bmak.sd_debug(',s1:' + bmak.sensor_data.slice(0, 10))
+                bmak.sensor_data = bmak.ver + '-1,2,-94,-100,' + n + '-1,2,-94,-101,' + i + '-1,2,-94,-105,' + bmak.informinfo + '-1,2,-94,-102,' + c + '-1,2,-94,-108,' + bmak.kact + '-1,2,-94,-110,' + bmak.mact + '-1,2,-94,-117,' + bmak.tact + '-1,2,-94,-111,' + bmak.doact + '-1,2,-94,-109,' + bmak.dmact + '-1,2,-94,-114,' + bmak.pact + '-1,2,-94,-103,' + bmak.vcact + '-1,2,-94,-112,' + b + '-1,2,-94,-115,' + w + '-1,2,-94,-106,' + d, bmak.sensor_data = bmak.sensor_data + '-1,2,-94,-119,' + bmak.mr + '-1,2,-94,-122,' + S + '-1,2,-94,-123,' + B + '-1,2,-94,-124,' + x + '-1,2,-94,-126,' + M + '-1,2,-94,-127,' + bmak.nav_perm;
+                var P = 24 ^ bmak.ab(bmak.sensor_data);
+                bmak.sensor_data = bmak.sensor_data + '-1,2,-94,-70,' + bmak.fpcf.fpValstr + '-1,2,-94,-80,' + y + '-1,2,-94,-116,' + bmak.o9 + '-1,2,-94,-118,' + P + '-1,2,-94,-129,' + E + '-1,2,-94,-121,', bmak.sd_debug(',s1:' + bmak.sensor_data.slice(0, 10))
             } catch (t) {
-                var P = '';
+                var T = '';
                 try {
-                    t.stack && 'string' == typeof t.stack ? P = t.stack.replace(/\"/g, "\\'") : 'string' == typeof t && (P = t.replace(/\"/g, "\\'")), P = P.slice(0, 1e3), bmak.sd_debug(',s2:' + P), bmak.sensor_data = bmak.ver + '-1,2,-94,-100,' + bmak.uar() + '-1,2,-94,-120,' + P
+                    t.stack && 'string' == typeof t.stack ? T = t.stack.replace(/\"/g, "\\'") : 'string' == typeof t && (T = t.replace(/\"/g, "\\'")), T = T.slice(0, 1e3), bmak.sd_debug(',s2:' + T), bmak.sensor_data = bmak.ver + '-1,2,-94,-100,' + bmak.uar() + '-1,2,-94,-120,' + T
                 } catch (t) {
-                    t.stack && 'string' == typeof t.stack ? P = t.stack.replace(/\"/g, "\\'") : 'string' == typeof t && (P = t.replace(/\"/g, "\\'")), P = P.slice(0, 1e3), bmak.sd_debug(',s3:' + P), bmak.sensor_data = bmak.ver + bmak.sensor_data + ',s3:' + P
+                    t.stack && 'string' == typeof t.stack ? T = t.stack.replace(/\"/g, "\\'") : 'string' == typeof t && (T = t.replace(/\"/g, "\\'")), T = T.slice(0, 1e3), bmak.sd_debug(',s3:' + T), bmak.sensor_data = bmak.ver + bmak.sensor_data + ',s3:' + T
                 }
             }
             try {
-                var T = bmak.od(bmak.cs, bmak.api_public_key).slice(0, 16),
-                    F = Math.floor(bmak.get_cf_date() / 36e5),
-                    D = bmak.get_cf_date(),
-                    B = T + bmak.od(F, T) + bmak.sensor_data;
-                bmak.sensor_data = B + ';' + (bmak.get_cf_date() - t) + ';' + bmak.tst + ';' + (bmak.get_cf_date() - D)
-            } catch (t) {}
+                var F = bmak.od(bmak.cs, bmak.api_public_key).slice(0, 16),
+                    D = Math.floor(bmak.get_cf_date() / 36e5),
+                    R = bmak.get_cf_date(),
+                    N = F + bmak.od(D, F) + bmak.sensor_data;
+                bmak.sensor_data = N + ';' + (bmak.get_cf_date() - t) + ';' + bmak.tst + ';' + (bmak.get_cf_date() - R)
+            } catch (t) { }
             bmak.sd_debug('</bpd>')
         },
         od: function (t, a) {
@@ -744,7 +935,7 @@ var _cf = _cf || [],
                     }
                     if (e.length > 0) return e.join('')
                 }
-            } catch (t) {}
+            } catch (t) { }
             return t
         },
         rir: function (t, a, e, n) {
@@ -758,13 +949,13 @@ var _cf = _cf || [],
                     bmak.vcact = bmak.vcact + e
                 }
                 bmak.vc_cnt++
-            } catch (t) {}
+            } catch (t) { }
         },
         hvc: function () {
             try {
                 var t = 1;
                 document[bmak.hn] && (t = 0), bmak.lvc(t)
-            } catch (t) {}
+            } catch (t) { }
         },
         hb: function (t) {
             bmak.lvc(2)
@@ -800,10 +991,10 @@ var _cf = _cf || [],
                 if ('string' == typeof navigator.appVersion && -1 != navigator.appVersion.indexOf('MSIE')) {
                     if (parseFloat(navigator.appVersion.split('MSIE')[1]) <= 9) return !0
                 }
-            } catch (t) {}
+            } catch (t) { }
             return !1
         },
-        parse_gp: function (t) {},
+        parse_gp: function (t) { },
         call_gp: function () {
             var t;
             void 0 !== window.XMLHttpRequest ? t = new XMLHttpRequest : void 0 !== window.XDomainRequest ? (t = new XDomainRequest, t.onload = function () {
@@ -831,7 +1022,7 @@ var _cf = _cf || [],
             }, n.send(o), bmak.dcs = 0
         },
         pd: function (t) {
-            bmak.check_stop_protocol() || bmak.check_ipr_signals() ? (bmak.apicall_bm(bmak.cf_url, t, bmak.patp), bmak.aj_indx = bmak.aj_indx + 1) : bmak.loap && bmak.dcs && bmak.apicall_bm(bmak.cf_url, t, bmak.patp)
+            bmak.check_stop_protocol() ? (bmak.apicall_bm(bmak.cf_url, t, bmak.patp), bmak.aj_indx = bmak.aj_indx + 1) : bmak.loap && bmak.dcs && bmak.apicall_bm(bmak.cf_url, t, bmak.patp)
         },
         check_stop_protocol: function () {
             var t = bmak.get_stop_signals(),
@@ -839,25 +1030,6 @@ var _cf = _cf || [],
             !bmak.rst && a > -1 && (bmak.ir(), bmak.rst = !0);
             var e = t[1];
             return -1 == e || bmak.aj_ss < e
-        },
-        check_ipr_signals: function () {
-            var t = -1;
-            if (bmak.ipr) try {
-                t = Date.now ? Date.now() : +new Date, t = bmak.pi(t / 1e3) - bmak.get_heartbeat_timestamp()
-            } catch (t) {}
-            return t > 0
-        },
-        get_heartbeat_timestamp: function () {
-            var t = Number.MAX_VALUE,
-                a = bmak.cookie_chk_read(bmak.ckie);
-            if (!1 !== a) try {
-                var e = decodeURIComponent(a).split('~');
-                if (e.length > 5) {
-                    var n = bmak.pi(e[5]);
-                    n = isNaN(n) || -1 == n ? Number.MAX_VALUE : n, t = n
-                }
-            } catch (t) {}
-            return t
         },
         get_stop_signals: function () {
             var t = [-1, -1],
@@ -869,7 +1041,7 @@ var _cf = _cf || [],
                         o = bmak.pi(e[3]);
                     n = isNaN(n) ? -1 : n, o = isNaN(o) ? -1 : o, t = [o, n]
                 }
-            } catch (t) {}
+            } catch (t) { }
             return t
         },
         patp: function (t) {
@@ -905,7 +1077,7 @@ var _cf = _cf || [],
                             }
                     }
                 }
-            } catch (t) {}
+            } catch (t) { }
             return t
         },
         mn_get_current_challenges: function () {
@@ -971,12 +1143,12 @@ var _cf = _cf || [],
             }
             var p = s / Math.pow(2, 32);
             u[l - 1][14] = Math.floor(p), u[l - 1][15] = s;
-            for (var h = 0; h < l; h++) {
-                for (var v, g = new Array(64), w = e, y = n, E = o, S = m, C = r, v = i, M = c, x = b, _ = 0; _ < 64; _++) {
-                    var j, A, L, P, T, F;
-                    _ < 16 ? g[_] = u[h][_] : (j = bmak.rotate_right(g[_ - 15], 7) ^ bmak.rotate_right(g[_ - 15], 18) ^ g[_ - 15] >>> 3, A = bmak.rotate_right(g[_ - 2], 17) ^ bmak.rotate_right(g[_ - 2], 19) ^ g[_ - 2] >>> 10, g[_] = g[_ - 16] + j + g[_ - 7] + A), A = bmak.rotate_right(C, 6) ^ bmak.rotate_right(C, 11) ^ bmak.rotate_right(C, 25), L = C & v ^ ~C & M, P = x + A + L + a[_] + g[_], j = bmak.rotate_right(w, 2) ^ bmak.rotate_right(w, 13) ^ bmak.rotate_right(w, 22), T = w & y ^ w & E ^ y & E, F = j + T, x = M, M = v, v = C, C = S + P >>> 0, S = E, E = y, y = w, w = P + F >>> 0
+            for (var v = 0; v < l; v++) {
+                for (var h, g = new Array(64), w = e, y = n, E = o, S = m, C = r, h = i, B = c, x = b, _ = 0; _ < 64; _++) {
+                    var M, j, A, L, P, T;
+                    _ < 16 ? g[_] = u[v][_] : (M = bmak.rotate_right(g[_ - 15], 7) ^ bmak.rotate_right(g[_ - 15], 18) ^ g[_ - 15] >>> 3, j = bmak.rotate_right(g[_ - 2], 17) ^ bmak.rotate_right(g[_ - 2], 19) ^ g[_ - 2] >>> 10, g[_] = g[_ - 16] + M + g[_ - 7] + j), j = bmak.rotate_right(C, 6) ^ bmak.rotate_right(C, 11) ^ bmak.rotate_right(C, 25), A = C & h ^ ~C & B, L = x + j + A + a[_] + g[_], M = bmak.rotate_right(w, 2) ^ bmak.rotate_right(w, 13) ^ bmak.rotate_right(w, 22), P = w & y ^ w & E ^ y & E, T = M + P, x = B, B = h, h = C, C = S + L >>> 0, S = E, E = y, y = w, w = L + T >>> 0
                 }
-                e += w, n += y, o += E, m += S, r += C, i += v, c += M, b += x
+                e += w, n += y, o += E, m += S, r += C, i += h, c += B, b += x
             }
             return [e >> 24 & 255, e >> 16 & 255, e >> 8 & 255, 255 & e, n >> 24 & 255, n >> 16 & 255, n >> 8 & 255, 255 & n, o >> 24 & 255, o >> 16 & 255, o >> 8 & 255, 255 & o, m >> 24 & 255, m >> 16 & 255, m >> 8 & 255, 255 & m, r >> 24 & 255, r >> 16 & 255, r >> 8 & 255, 255 & r, i >> 24 & 255, i >> 16 & 255, i >> 8 & 255, 255 & i, c >> 24 & 255, c >> 16 & 255, c >> 8 & 255, 255 & c, b >> 24 & 255, b >> 16 & 255, b >> 8 & 255, 255 & b]
         },
@@ -1074,9 +1246,6 @@ var _cf = _cf || [],
             },
             _setLOAP: function (t) {
                 bmak.loap = t
-            },
-            _setIpr: function (t) {
-                bmak.ipr = t
             }
         },
         applyFunc: function () {
@@ -1090,159 +1259,159 @@ var _cf = _cf || [],
         }
     };
 if (function (t) {
-        var a = {};
-        t.fpcf = a, a.sf4 = function () {
-            var t = bmak.uar();
-            return !(!~t.indexOf('Version/4.0') || !(~t.indexOf('iPad;') || ~t.indexOf('iPhone') || ~t.indexOf('Mac OS X 10_5')))
-        }, a.fpValstr = '-1', a.fpValCalculated = !1, a.rVal = '-1', a.rCFP = '-1', a.cache = {}, a.td = -999999, a.clearCache = function () {
-            a.cache = {}
-        }, a.fpVal = function () {
-            a.fpValCalculated = !0;
-            try {
-                var t = 0;
-                t = Date.now ? Date.now() : +new Date;
-                var e = a.data();
-                a.fpValstr = e.replace(/\"/g, '\\\\"');
-                var n = 0;
-                n = Date.now ? Date.now() : +new Date, a.td = n - t
-            } catch (t) {}
-        }, a.timezoneOffsetKey = function () {
-            return (new Date).getTimezoneOffset()
-        }, a.data = function () {
-            var t = screen.colorDepth ? screen.colorDepth : -1,
-                e = screen.pixelDepth ? screen.pixelDepth : -1,
-                n = navigator.cookieEnabled ? navigator.cookieEnabled : -1,
-                o = navigator.javaEnabled ? navigator.javaEnabled() : -1,
-                m = navigator.doNotTrack ? navigator.doNotTrack : -1,
-                r = 'default';
-            r = bmak.runFonts ? bmak.altFonts ? a.fonts_optm() : a.fonts() : 'dis';
-            return [a.canvas('<@nv45. F1n63r,Pr1n71n6!'), a.canvas('m,Ev!xV67BaU> eh2m<f3AG3@'), r, a.pluginInfo(), a.sessionStorageKey(), a.localStorageKey(), a.indexedDbKey(), a.timezoneOffsetKey(), a.webrtcKey(), t, e, n, o, m].join(';')
-        }, a.PLUGINS = ['WebEx64 General Plugin Container', 'YouTube Plug-in', 'Java Applet Plug-in', 'Shockwave Flash', 'iPhotoPhotocast', 'SharePoint Browser Plug-in', 'Chrome Remote Desktop Viewer', 'Chrome PDF Viewer', 'Native Client', 'Unity Player', 'WebKit-integrierte PDF', 'QuickTime Plug-in', 'RealPlayer Version Plugin', 'RealPlayer(tm) G2 LiveConnect-Enabled Plug-In (32-bit)', 'Mozilla Default Plug-in', 'Adobe Acrobat', 'AdobeAAMDetect', 'Google Earth Plug-in', 'Java Plug-in 2 for NPAPI Browsers', 'Widevine Content Decryption Module', 'Microsoft Office Live Plug-in', 'Windows Media Player Plug-in Dynamic Link Library', 'Google Talk Plugin Video Renderer', 'Edge PDF Viewer', 'Shockwave for Director', 'Default Browser Helper', 'Silverlight Plug-In'], a.pluginInfo = function () {
-            if (void 0 === navigator.plugins) return null;
-            for (var t = a.PLUGINS.length, e = '', n = 0; n < t; n++) {
-                var o = a.PLUGINS[n];
-                void 0 !== navigator.plugins[o] && (e = e + ',' + n)
+    var a = {};
+    t.fpcf = a, a.sf4 = function () {
+        var t = bmak.uar();
+        return !(!~t.indexOf('Version/4.0') || !(~t.indexOf('iPad;') || ~t.indexOf('iPhone') || ~t.indexOf('Mac OS X 10_5')))
+    }, a.fpValstr = '-1', a.fpValCalculated = !1, a.rVal = '-1', a.rCFP = '-1', a.cache = {}, a.td = -999999, a.clearCache = function () {
+        a.cache = {}
+    }, a.fpVal = function () {
+        a.fpValCalculated = !0;
+        try {
+            var t = 0;
+            t = Date.now ? Date.now() : +new Date;
+            var e = a.data();
+            a.fpValstr = e.replace(/\"/g, '\\\\"');
+            var n = 0;
+            n = Date.now ? Date.now() : +new Date, a.td = n - t
+        } catch (t) { }
+    }, a.timezoneOffsetKey = function () {
+        return (new Date).getTimezoneOffset()
+    }, a.data = function () {
+        var t = screen.colorDepth ? screen.colorDepth : -1,
+            e = screen.pixelDepth ? screen.pixelDepth : -1,
+            n = navigator.cookieEnabled ? navigator.cookieEnabled : -1,
+            o = navigator.javaEnabled ? navigator.javaEnabled() : -1,
+            m = navigator.doNotTrack ? navigator.doNotTrack : -1,
+            r = 'default';
+        r = bmak.runFonts ? bmak.altFonts ? a.fonts_optm() : a.fonts() : 'dis';
+        return [a.canvas('<@nv45. F1n63r,Pr1n71n6!'), a.canvas('m,Ev!xV67BaU> eh2m<f3AG3@'), r, a.pluginInfo(), a.sessionStorageKey(), a.localStorageKey(), a.indexedDbKey(), a.timezoneOffsetKey(), a.webrtcKey(), t, e, n, o, m].join(';')
+    }, a.PLUGINS = ['WebEx64 General Plugin Container', 'YouTube Plug-in', 'Java Applet Plug-in', 'Shockwave Flash', 'iPhotoPhotocast', 'SharePoint Browser Plug-in', 'Chrome Remote Desktop Viewer', 'Chrome PDF Viewer', 'Native Client', 'Unity Player', 'WebKit-integrierte PDF', 'QuickTime Plug-in', 'RealPlayer Version Plugin', 'RealPlayer(tm) G2 LiveConnect-Enabled Plug-In (32-bit)', 'Mozilla Default Plug-in', 'Adobe Acrobat', 'AdobeAAMDetect', 'Google Earth Plug-in', 'Java Plug-in 2 for NPAPI Browsers', 'Widevine Content Decryption Module', 'Microsoft Office Live Plug-in', 'Windows Media Player Plug-in Dynamic Link Library', 'Google Talk Plugin Video Renderer', 'Edge PDF Viewer', 'Shockwave for Director', 'Default Browser Helper', 'Silverlight Plug-In'], a.pluginInfo = function () {
+        if (void 0 === navigator.plugins) return null;
+        for (var t = a.PLUGINS.length, e = '', n = 0; n < t; n++) {
+            var o = a.PLUGINS[n];
+            void 0 !== navigator.plugins[o] && (e = e + ',' + n)
+        }
+        return e
+    }, a.canvas = function (t) {
+        try {
+            if (void 0 !== a.cache.canvas) return a.cache.canvas;
+            var e = -1;
+            if (!a.sf4()) {
+                var n = document.createElement('canvas');
+                if (n.width = 280, n.height = 60, n.style.display = 'none', 'function' == typeof n.getContext) {
+                    var o = n.getContext('2d');
+                    o.fillStyle = 'rgb(102, 204, 0)', o.fillRect(100, 5, 80, 50), o.fillStyle = '#f60', o.font = '16pt Arial', o.fillText(t, 10, 40), o.strokeStyle = 'rgb(120, 186, 176)', o.arc(80, 10, 20, 0, Math.PI, !1), o.stroke();
+                    var m = n.toDataURL();
+                    e = 0;
+                    for (var r = 0; r < m.length; r++) {
+                        e = (e << 5) - e + m.charCodeAt(r), e &= e
+                    }
+                    e = e.toString();
+                    var i = document.createElement('canvas');
+                    i.width = 16, i.height = 16;
+                    var c = i.getContext('2d');
+                    c.font = '6pt Arial', a.rVal = Math.floor(1e3 * Math.random()).toString(), c.fillText(a.rVal, 1, 12);
+                    for (var b = i.toDataURL(), d = 0, s = 0; s < b.length; s++) {
+                        d = (d << 5) - d + b.charCodeAt(s), d &= d
+                    }
+                    a.rCFP = d.toString()
+                }
             }
             return e
-        }, a.canvas = function (t) {
-            try {
-                if (void 0 !== a.cache.canvas) return a.cache.canvas;
-                var e = -1;
-                if (!a.sf4()) {
-                    var n = document.createElement('canvas');
-                    if (n.width = 280, n.height = 60, n.style.display = 'none', 'function' == typeof n.getContext) {
-                        var o = n.getContext('2d');
-                        o.fillStyle = 'rgb(102, 204, 0)', o.fillRect(100, 5, 80, 50), o.fillStyle = '#f60', o.font = '16pt Arial', o.fillText(t, 10, 40), o.strokeStyle = 'rgb(120, 186, 176)', o.arc(80, 10, 20, 0, Math.PI, !1), o.stroke();
-                        var m = n.toDataURL();
-                        e = 0;
-                        for (var r = 0; r < m.length; r++) {
-                            e = (e << 5) - e + m.charCodeAt(r), e &= e
-                        }
-                        e = e.toString();
-                        var i = document.createElement('canvas');
-                        i.width = 16, i.height = 16;
-                        var c = i.getContext('2d');
-                        c.font = '6pt Arial', a.rVal = Math.floor(1e3 * Math.random()).toString(), c.fillText(a.rVal, 1, 12);
-                        for (var b = i.toDataURL(), d = 0, s = 0; s < b.length; s++) {
-                            d = (d << 5) - d + b.charCodeAt(s), d &= d
-                        }
-                        a.rCFP = d.toString()
-                    }
-                }
-                return e
-            } catch (t) {
-                return 'exception'
+        } catch (t) {
+            return 'exception'
+        }
+    }, a.fonts_optm = function () {
+        var t = 200,
+            e = bmak.get_cf_date(),
+            n = [];
+        if (!a.sf4() && document.body) {
+            var o = ['sans-serif', 'monospace'],
+                m = [0, 0],
+                r = [0, 0],
+                i = document.createElement('div');
+            i.style.cssText = 'position: relative; left: -9999px; visibility: hidden; display: block !important';
+            var c;
+            for (c = 0; c < o.length; c++) {
+                var b = document.createElement('span');
+                b.innerHTML = 'abcdefhijklmnopqrstuvxyz1234567890;+-.', b.style.fontSize = '90px', b.style.fontFamily = o[c], i.appendChild(b)
             }
-        }, a.fonts_optm = function () {
-            var t = 200,
-                e = bmak.get_cf_date(),
-                n = [];
-            if (!a.sf4() && document.body) {
-                var o = ['sans-serif', 'monospace'],
-                    m = [0, 0],
-                    r = [0, 0],
-                    i = document.createElement('div');
-                i.style.cssText = 'position: relative; left: -9999px; visibility: hidden; display: block !important';
-                var c;
+            for (document.body.appendChild(i), c = 0; c < i.childNodes.length; c++) b = i.childNodes[c], m[c] = b.offsetWidth, r[c] = b.offsetHeight;
+            if (document.body.removeChild(i), bmak.get_cf_date() - e > t) return '';
+            var d = ['Geneva', 'Lobster', 'New York', 'Century', 'Apple Gothic', 'Minion Pro', 'Apple LiGothic', 'Century Gothic', 'Monaco', 'Lato', 'Fantasque Sans Mono', 'Adobe Braille', 'Cambria', 'Futura', 'Bell MT', 'Courier', 'Courier New', 'Calibri', 'Avenir Next', 'Birch Std', 'Palatino', 'Ubuntu Regular', 'Oswald', 'Batang', 'Ubuntu Medium', 'Cantarell', 'Droid Serif', 'Roboto', 'Helvetica Neue', 'Corsiva Hebrew', 'Adobe Hebrew', 'TI-Nspire', 'Comic Neue', 'Noto', 'AlNile', 'Palatino-Bold', 'ArialHebrew-Light', 'Avenir', 'Papyrus', 'Open Sans', 'Times', 'Quicksand', 'Source Sans Pro', 'Damascus', 'Microsoft Sans Serif'],
+                s = document.createElement('div');
+            s.style.cssText = 'position: relative; left: -9999px; visibility: hidden; display: block !important';
+            for (var k = [], l = 0; l < d.length; l++) {
+                var u = document.createElement('div');
                 for (c = 0; c < o.length; c++) {
                     var b = document.createElement('span');
-                    b.innerHTML = 'abcdefhijklmnopqrstuvxyz1234567890;+-.', b.style.fontSize = '90px', b.style.fontFamily = o[c], i.appendChild(b)
+                    b.innerHTML = 'abcdefhijklmnopqrstuvxyz1234567890;+-.', b.style.fontSize = '90px', b.style.fontFamily = d[l] + ',' + o[c], u.appendChild(b)
                 }
-                for (document.body.appendChild(i), c = 0; c < i.childNodes.length; c++) b = i.childNodes[c], m[c] = b.offsetWidth, r[c] = b.offsetHeight;
-                if (document.body.removeChild(i), bmak.get_cf_date() - e > t) return '';
-                var d = ['Geneva', 'Lobster', 'New York', 'Century', 'Apple Gothic', 'Minion Pro', 'Apple LiGothic', 'Century Gothic', 'Monaco', 'Lato', 'Fantasque Sans Mono', 'Adobe Braille', 'Cambria', 'Futura', 'Bell MT', 'Courier', 'Courier New', 'Calibri', 'Avenir Next', 'Birch Std', 'Palatino', 'Ubuntu Regular', 'Oswald', 'Batang', 'Ubuntu Medium', 'Cantarell', 'Droid Serif', 'Roboto', 'Helvetica Neue', 'Corsiva Hebrew', 'Adobe Hebrew', 'TI-Nspire', 'Comic Neue', 'Noto', 'AlNile', 'Palatino-Bold', 'ArialHebrew-Light', 'Avenir', 'Papyrus', 'Open Sans', 'Times', 'Quicksand', 'Source Sans Pro', 'Damascus', 'Microsoft Sans Serif'],
-                    s = document.createElement('div');
-                s.style.cssText = 'position: relative; left: -9999px; visibility: hidden; display: block !important';
-                for (var k = [], l = 0; l < d.length; l++) {
-                    var u = document.createElement('div');
-                    for (c = 0; c < o.length; c++) {
-                        var b = document.createElement('span');
-                        b.innerHTML = 'abcdefhijklmnopqrstuvxyz1234567890;+-.', b.style.fontSize = '90px', b.style.fontFamily = d[l] + ',' + o[c], u.appendChild(b)
+                s.appendChild(u)
+            }
+            if (bmak.get_cf_date() - e > t) return '';
+            document.body.appendChild(s);
+            for (var l = 0; l < s.childNodes.length; l++) {
+                var _ = !1,
+                    u = s.childNodes[l];
+                for (c = 0; c < u.childNodes.length; c++) {
+                    var b = u.childNodes[c];
+                    if (b.offsetWidth !== m[c] || b.offsetHeight !== r[c]) {
+                        _ = !0;
+                        break
                     }
-                    s.appendChild(u)
                 }
-                if (bmak.get_cf_date() - e > t) return '';
-                document.body.appendChild(s);
-                for (var l = 0; l < s.childNodes.length; l++) {
-                    var _ = !1,
-                        u = s.childNodes[l];
-                    for (c = 0; c < u.childNodes.length; c++) {
-                        var b = u.childNodes[c];
-                        if (b.offsetWidth !== m[c] || b.offsetHeight !== r[c]) {
-                            _ = !0;
-                            break
-                        }
-                    }
-                    if (_ && k.push(l), bmak.get_cf_date() - e > t) break
-                }
-                document.body.removeChild(s), n = k.sort()
+                if (_ && k.push(l), bmak.get_cf_date() - e > t) break
             }
-            return n.join(',')
-        }, a.fonts = function () {
-            var t = [];
-            if (!a.sf4() && document.body) {
-                var e = ['serif', 'sans-serif', 'monospace'],
-                    n = [0, 0, 0],
-                    o = [0, 0, 0],
-                    m = document.createElement('span');
-                m.innerHTML = 'abcdefhijklmnopqrstuvxyz1234567890;+-.', m.style.fontSize = '90px';
-                var r;
-                for (r = 0; r < e.length; r++) m.style.fontFamily = e[r], document.body.appendChild(m), n[r] = m.offsetWidth, o[r] = m.offsetHeight, document.body.removeChild(m);
-                for (var i = ['Geneva', 'Lobster', 'New York', 'Century', 'Apple Gothic', 'Minion Pro', 'Apple LiGothic', 'Century Gothic', 'Monaco', 'Lato', 'Fantasque Sans Mono', 'Adobe Braille', 'Cambria', 'Futura', 'Bell MT', 'Courier', 'Courier New', 'Calibri', 'Avenir Next', 'Birch Std', 'Palatino', 'Ubuntu Regular', 'Oswald', 'Batang', 'Ubuntu Medium', 'Cantarell', 'Droid Serif', 'Roboto', 'Helvetica Neue', 'Corsiva Hebrew', 'Adobe Hebrew', 'TI-Nspire', 'Comic Neue', 'Noto', 'AlNile', 'Palatino-Bold', 'ArialHebrew-Light', 'Avenir', 'Papyrus', 'Open Sans', 'Times', 'Quicksand', 'Source Sans Pro', 'Damascus', 'Microsoft Sans Serif'], c = [], b = 0; b < i.length; b++) {
-                    var d = !1;
-                    for (r = 0; r < e.length; r++)
-                        if (m.style.fontFamily = i[b] + ',' + e[r], document.body.appendChild(m), m.offsetWidth === n[r] && m.offsetHeight === o[r] || (d = !0), document.body.removeChild(m), d) {
-                            c.push(b);
-                            break
-                        }
-                }
-                t = c.sort()
-            }
-            return t.join(',')
-        }, a.webrtcKey = function () {
-            return 'function' == typeof window.RTCPeerConnection || 'function' == typeof window.mozRTCPeerConnection || 'function' == typeof window.webkitRTCPeerConnection
-        }, a.indexedDbKey = function () {
-            return !!a.hasIndexedDB()
-        }, a.sessionStorageKey = function () {
-            return !!a.hasSessionStorage()
-        }, a.localStorageKey = function () {
-            return !!a.hasLocalStorage()
-        }, a.hasSessionStorage = function () {
-            try {
-                return !!window.sessionStorage
-            } catch (t) {
-                return !1
-            }
-        }, a.hasLocalStorage = function () {
-            try {
-                return !!window.localStorage
-            } catch (t) {
-                return !1
-            }
-        }, a.hasIndexedDB = function () {
-            return !!window.indexedDB
+            document.body.removeChild(s), n = k.sort()
         }
-    }(bmak), bmak.firstLoad) {
+        return n.join(',')
+    }, a.fonts = function () {
+        var t = [];
+        if (!a.sf4() && document.body) {
+            var e = ['serif', 'sans-serif', 'monospace'],
+                n = [0, 0, 0],
+                o = [0, 0, 0],
+                m = document.createElement('span');
+            m.innerHTML = 'abcdefhijklmnopqrstuvxyz1234567890;+-.', m.style.fontSize = '90px';
+            var r;
+            for (r = 0; r < e.length; r++) m.style.fontFamily = e[r], document.body.appendChild(m), n[r] = m.offsetWidth, o[r] = m.offsetHeight, document.body.removeChild(m);
+            for (var i = ['Geneva', 'Lobster', 'New York', 'Century', 'Apple Gothic', 'Minion Pro', 'Apple LiGothic', 'Century Gothic', 'Monaco', 'Lato', 'Fantasque Sans Mono', 'Adobe Braille', 'Cambria', 'Futura', 'Bell MT', 'Courier', 'Courier New', 'Calibri', 'Avenir Next', 'Birch Std', 'Palatino', 'Ubuntu Regular', 'Oswald', 'Batang', 'Ubuntu Medium', 'Cantarell', 'Droid Serif', 'Roboto', 'Helvetica Neue', 'Corsiva Hebrew', 'Adobe Hebrew', 'TI-Nspire', 'Comic Neue', 'Noto', 'AlNile', 'Palatino-Bold', 'ArialHebrew-Light', 'Avenir', 'Papyrus', 'Open Sans', 'Times', 'Quicksand', 'Source Sans Pro', 'Damascus', 'Microsoft Sans Serif'], c = [], b = 0; b < i.length; b++) {
+                var d = !1;
+                for (r = 0; r < e.length; r++)
+                    if (m.style.fontFamily = i[b] + ',' + e[r], document.body.appendChild(m), m.offsetWidth === n[r] && m.offsetHeight === o[r] || (d = !0), document.body.removeChild(m), d) {
+                        c.push(b);
+                        break
+                    }
+            }
+            t = c.sort()
+        }
+        return t.join(',')
+    }, a.webrtcKey = function () {
+        return 'function' == typeof window.RTCPeerConnection || 'function' == typeof window.mozRTCPeerConnection || 'function' == typeof window.webkitRTCPeerConnection
+    }, a.indexedDbKey = function () {
+        return !!a.hasIndexedDB()
+    }, a.sessionStorageKey = function () {
+        return !!a.hasSessionStorage()
+    }, a.localStorageKey = function () {
+        return !!a.hasLocalStorage()
+    }, a.hasSessionStorage = function () {
+        try {
+            return !!window.sessionStorage
+        } catch (t) {
+            return !1
+        }
+    }, a.hasLocalStorage = function () {
+        try {
+            return !!window.localStorage
+        } catch (t) {
+            return !1
+        }
+    }, a.hasIndexedDB = function () {
+        return !!window.indexedDB
+    }
+}(bmak), bmak.firstLoad) {
     if (bmak.sd_debug('<init/>'), _cf.length > 0) {
         for (var bm_counter = 0; bm_counter < _cf.length; bm_counter++) bmak.applyFunc(_cf[bm_counter]);
         bmak.sd_debug('<setSDFN>' + bmak.sdfn.join() + '</setSDFN>'), _cf = {
@@ -1260,7 +1429,7 @@ if (function (t) {
                 obfus_state_field;
             if (url_split.length >= 4 && (obfus_state_field = bm_url.split('/').slice(-4)[0]), obfus_state_field && obfus_state_field.length % 2 == 0) {
                 var state_field_str = bmak.getStateField(obfus_state_field);
-                state_field_str.length > 3 && (bmak.listFunctions._setFsp('1' == state_field_str[0]), bmak.listFunctions._setBm('1' == state_field_str[1]), bmak.listFunctions._setPowState('1' == state_field_str[2]), bmak.listFunctions._setIpr('1' == state_field_str[3]), bmak.listFunctions._setAu(bm_url))
+                state_field_str.length >= 3 && (bmak.listFunctions._setFsp('1' == state_field_str[0]), bmak.listFunctions._setBm('1' == state_field_str[1]), bmak.listFunctions._setPowState('1' == state_field_str[2]), bmak.listFunctions._setAu(bm_url))
             }
         }
     }
@@ -1268,5 +1437,5 @@ if (function (t) {
         bmak.ir(), bmak.t_tst = bmak.get_cf_date(), bmak.startTracking(), bmak.tst = bmak.get_cf_date() - bmak.t_tst, bmak.disFpCalOnTimeout || setTimeout(bmak.calc_fp, 500);
         for (var bm_counter = 0; bm_counter < 3; bm_counter++) setTimeout(bmak.getmr, 400 + 5e3 * bm_counter);
         bmak.mn_init()
-    } catch (t) {}
+    } catch (t) { }
 }
