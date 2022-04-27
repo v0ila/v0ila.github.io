@@ -15,8 +15,8 @@ var bmak = bmak && bmak.hasOwnProperty("ver") && bmak.hasOwnProperty("sed") ? bm
     session_id: "default_session",
     js_post: false,
     loc: "",
-    params_url: "https://www.fedex.com/get_params'",
-    cf_url: "https://www.fedex.com/rotHnE/Qan7/1Mb/nZw/xPmnOhcnqsk/Q3ES2zGp/HXYyb00D/ATR1GG/kOAHcB",
+    params_url: "<URL>/get_params'",
+    cf_url: "<URL>",
     auth: "",
     api_public_key: "afSbep8yjnZUjq3aL010jO15Sawj2VZfdYK8uY90uxq",
     aj_lmt_doact: 1,
@@ -529,7 +529,7 @@ gd: function() {
     var cookie_exists = 2;
     var beginning = bmak.gd();
     var form_info = "0,-1,0,0,1498,-1,0;0,-1,0,1,2588,1468,0;0,-1,0,1,1500,1500,0;0,-1,0,1,1684,1684,0;0,-1,0,1,1684,1684,0;0,-1,0,1,1684,1684,0;0,-1,0,1,2563,-1,0;";
-    var home_url = "https://www.fedex.com/global/choose-location.html";
+    var home_url = "<HOME_URL>";
     var aj_type = 1;
     var total_calls = 0;
     var obfuscated_start_time = bmak.jrs(bmak.start_ts);
