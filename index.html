@@ -4,9 +4,14 @@
 </head>
 <body onload="bmak.mact;bmak.sensor_data;bmak.bpd();document.getElementById('sensordata').innerHTML = bmak.get_telemetry();">
   
-<p id="sensordata"></p>
 
-<script src="sensor.js"></script>
-  
+
+    <h1>Sensor Data visualizer</h1>
+    <input id="input" type="text" value=""/>
+    <button id="btn">Plot Sensor</button>
+    <p id="status"></p>
+    <br>
+</body>
+
 </body>
 </html>
